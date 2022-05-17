@@ -1,1 +1,3 @@
-console.log('Hello world');
+import { starServer } from './app';
+
+starServer();
