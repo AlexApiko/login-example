@@ -112,12 +112,35 @@ describe('Auth.Controller.loginV2', () => {
       .send({ email: 'wrong@email.com', password: '12345' })
       .set('Accept', 'application/json');
 
-    expect(response.headers['auth-token']).toBeUndefined();
     expect(response.status).toEqual(403);
     expect(response.body).toMatchObject({
       message: 'Invalid email or password',
     });
+    expect(response.body.accessToken).toBeUndefined();
   });
 
-  // TODO: Add rest or login-v2 test
+  test('loginV2 should response with error on validation failed', async () => {
+    const response = await request(app)
+      .post('/api/login-v2')
+      .send({ email: 'notEmail' })
+      .set('Accept', 'application/json');
+
+    expect(response.headers['auth-token']).toBeUndefined();
+    expect(response.status).toEqual(422);
+    expect(response.body).toMatchObject({
+      message: 'Invalid input',
+      validationErrors: [
+        {
+          property: 'email',
+          value: 'notEmail',
+          constraints: { isEmail: expect.any(String) },
+        },
+        {
+          property: 'password',
+          constraints: { isString: 'password must be a string' },
+        },
+      ],
+    });
+    expect(response.body.accessToken).toBeUndefined();
+  });
 });
