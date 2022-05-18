@@ -1,3 +1,10 @@
+import 'reflect-metadata';
 import { starServer } from './app';
+import { connectToDB } from './data-source';
 
-starServer();
+const startApp = async () => {
+  await connectToDB();
+  starServer();
+};
+
+startApp();

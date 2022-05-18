@@ -1,7 +1,6 @@
 import { Router } from 'express';
+import { authController } from '../controllers/auth';
 
 export const apiRouter = Router();
 
-apiRouter.post('/login', (req, res) => {
-  res.json({ status: 'logged in' });
-});
+apiRouter.post('/login', authController.login);
