@@ -2,12 +2,13 @@ import * as jwt from 'jsonwebtoken';
 import { compare } from 'bcrypt';
 import { v4 as uuidv4 } from 'uuid';
 import { HttpError } from '../utils/http-error';
-import { User } from '../models/user';
+import { User, UserPublicProfile } from '../models/user';
 import { userService, UserService } from './users';
 
 export interface AuthResponse {
   accessToken: string;
   refreshToken: string;
+  user: UserPublicProfile;
 }
 
 export class AuthService {
@@ -34,6 +35,7 @@ export class AuthService {
     return {
       accessToken: this.signAuthAuthToken(user),
       refreshToken: uuidv4(), // TODO: save refresh token to the DB
+      user: User.getPublicProfile(user),
     };
   };
 

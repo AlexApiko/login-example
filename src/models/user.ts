@@ -18,4 +18,18 @@ export class User {
 
   @CreateDateColumn({ precision: 3 })
   createdAt!: Date;
+
+  static getPublicProfile(user: User): UserPublicProfile {
+    return {
+      id: user.id,
+      email: user.email,
+      createdAt: user.createdAt,
+    };
+  }
+}
+
+export class UserPublicProfile {
+  id!: number;
+  email!: string;
+  createdAt!: Date;
 }
