@@ -1,6 +1,7 @@
 import * as jwt from 'jsonwebtoken';
 import { compare } from 'bcrypt';
 import { v4 as uuidv4 } from 'uuid';
+import { HttpError } from '../utils/http-error';
 import { User } from '../models/user';
 import { userService, UserService } from './users';
 
@@ -21,13 +22,13 @@ export class AuthService {
   }): Promise<AuthResponse> => {
     const user = await this.userService.findUserByEmail(email);
     if (!user) {
-      throw new Error('Invalid email or password');
+      throw new HttpError('Invalid email or password', 403);
     }
 
     const isValidPwd = await this.comparePasswords(password, user?.pwdHash);
 
     if (!isValidPwd) {
-      throw new Error('Invalid email or password');
+      throw new HttpError('Invalid email or password', 403);
     }
 
     return {

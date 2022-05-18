@@ -1,6 +1,7 @@
 import express, { Request, Response, NextFunction } from 'express';
 import bodyParser from 'body-parser';
 import { apiRouter } from './routes';
+import { HttpError } from './utils/http-error';
 
 const app = express();
 
@@ -11,9 +12,15 @@ export const starServer = () => {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
-    res.status(500).json({
-      message: error.message || 'Something went wrong',
-    });
+    if (error instanceof HttpError) {
+      res.status(error.statusCode).json({
+        message: error.message,
+      });
+    } else {
+      res.status(500).json({
+        message: 'Internal server error',
+      });
+    }
   });
 
   app.listen(PORT, () => {
